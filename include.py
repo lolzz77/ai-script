@@ -215,28 +215,53 @@ def detect_case(string):
 def spilt_string(string):
     """
     To split a string (camel, pascal, snake, kebab) altogether
+    once splitted, will remove duplicates
     """
     listOfWords = []
     result = []
 
-    if '_' in string:
-        listOfWords.extend(string.split('_'))
-    if '-' in string:
-        listOfWords.extend(string.split('-'))
     if any(c.isdigit() for c in string): # If contain digits
         listOfWords.extend(re.split(r'(\d+)', string))
 
+    if len(listOfWords) != 0:
+        for word in listOfWords:
+            if '_' in word:
+                listOfWords.extend(word.split('_'))
+    else:
+        listOfWords.extend(string.split('_'))
+
+    if len(listOfWords) != 0:
+        for word in listOfWords:
+            if '-' in word:
+                listOfWords.extend(word.split('-'))
+    else:
+        listOfWords.extend(string.split('_'))
+
     if listOfWords == []:
         listOfWords.append(string)
-    
+
+    # because above logic is, split digits, split '_', split '-'
+    # then it will result in duplicates values in the list
+    # thus, remove them by converting them into set and back to list
+    list_to_set = set(listOfWords)
+    listOfWords = list(list_to_set)
+
+    # due to above logic, if string contain digit
+    # then it will split, then will cause `listOfWords` to hold a value of list
+    # then the next `if` will append to the list
+    # so, duplicates, so, delete those that contain `-` `_`
+    for i, word in enumerate(listOfWords.copy()):
+        if '_' in word or '-' in word:
+            listOfWords.remove(word)
+
     # for cases "A_B_"
     # will result in "'A', 'B', ''"
-    # for cases "_A_B"
-    # will result in "'', 'A', 'B'"
-    if listOfWords[-1] == '':
-        listOfWords.pop()
-    if listOfWords[0] == '':
-        listOfWords.pop(0)
+    # have to come after removing duplicates
+    # cos if not, there will be multiple '' in the list
+    # this only capable of removing 1 of them
+    for i, word in enumerate(listOfWords.copy()):
+        if word == '':
+            listOfWords.remove(word)
 
     for words in listOfWords:
         # fail, `MSG` will split `m,s,g`
@@ -254,6 +279,7 @@ def spilt_string(string):
     # `HELLO` dont lower
     # lowerCased = [s.lower() for s in result]
     lowerCased = [s.lower() if any(c.islower() for c in s) else s for s in result]
+
     return lowerCased
 
 def is_english_word(word):

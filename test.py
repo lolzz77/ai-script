@@ -11,6 +11,7 @@ snakeCaseRegex = re.compile(r'.*_.*') # snake_case
 kebabCaseRegex = re.compile(r'.*-.*') # Kebab-Case
 
 import unittest
+from collections import Counter
 import include
 
 
@@ -57,11 +58,18 @@ class TestSplitString(unittest.TestCase):
             # I shall see how should I fix this
             ['Xint', ['xint']],
             ['XintX', ['xint', 'X']],
-            ['A2A', ['A', '2', 'A']],
+            ['A2A', ['A', '2']], # duplicates will be removed
             ['pause2continue', ['pause', '2', 'continue']],
             ['A_B_', ['A', 'B']],
             ['_A_B', ['A', 'B']],
             ['_A_B_', ['A', 'B']],
+            ['A_B-C', ['A', 'B', 'C']],
+            ['A_123', ['A', '123']],
+            ['A_B_123', ['A', 'B', '123']],
+            ['_A_B_123_', ['A', 'B', '123']],
+            ['-A_B_123-', ['A', 'B', '123']],
+            ['-A_B-123_', ['A', 'B', '123']],
+            ['--A_B--123__', ['A', 'B', '123']],
         ]
 
         for i, test_case in enumerate(test_cases):
@@ -69,7 +77,7 @@ class TestSplitString(unittest.TestCase):
             # 1st index is 0
 
             with self.subTest(i=i):
-                self.assertEqual(include.spilt_string(test_case[0]), test_case[1])
+                self.assertEqual(Counter(include.spilt_string(test_case[0])), Counter(test_case[1]))
 
 class TestIsEnglishWord(unittest.TestCase):
     def test_is_english_word(self):
