@@ -1,5 +1,19 @@
 # Command
-# python3 [file name] [repo path]
+# python3 [this script file name] [repo path]
+
+"""
+Expected output
+- JSON File
+- Content
+{
+    "c": [
+        "./path/to/file.c",
+    ],
+    "cpp": [
+        "./path/to/file.cpp",
+    ],"
+}
+"""
 
 import json
 import os
@@ -8,6 +22,7 @@ from multiprocessing import Pool
 
 import include # header file
 
+# this file will be created
 FILES_JSON='files.json'
 
 # input in temrinal:
@@ -15,8 +30,6 @@ FILES_JSON='files.json'
 # argv[0] == allFileMakefile.py
 # argv[1] == repo
 dir_path = sys.argv[1]
-
-
 
 def get_file_extension(file_path):
     """

@@ -1,5 +1,28 @@
 import re
 import json
+import nltk
+nltk.download('words')
+from nltk.corpus import words
+
+COLORS = {
+    'reset'         : '\x1b[0m',
+    'underline'     : '\x1b[4m',
+    'reverse'       : '\x1b[7m',
+    'red'           : '\x1b[31m',
+    'green'         : '\x1b[32m',
+    'yellow'        : '\x1b[33m',
+    'blue'          : '\x1b[34m',
+    'magenta'       : '\x1b[35m',
+    'cyan'          : '\x1b[36m',
+    'white'         : '\x1b[37m',
+    'grey'          : '\x1b[90m',
+    'lightred'      : '\x1b[1;31m',
+    'lightgreen'    : '\x1b[1;32m',
+    'lightyellow'   : '\x1b[1;33m',
+    'lightblue'     : '\x1b[1;34m',
+    'lightmagenta'  : '\x1b[1;35m',
+    'lightcyan'     : '\x1b[1;36m',
+}
 
 POSIX_regex_skip = [
     # If matches these, skip
@@ -113,6 +136,9 @@ def update_dictionary(key, value, data):
     update the dictionary
     dictionary use this format { 'key' : 'value' }
     If key exists, it will append to value, will not overwrite the value
+
+    data: this param is essential. This is the dictionary data return by this function
+    You can pass in empty 'data', then this dictionary will write data into it
     """
     if key == '':
         key = 'unknown'
@@ -143,3 +169,88 @@ def create_file(file_path):
     #     open(file_path, 'w').close()
     #     return True
     # return False
+
+def detect_case(string):
+    """
+    To detect what string (eg: camel, pascal, snake, kebab)
+    But i found out, this probably not a good approach
+    Especially for mixed case (eg: camel + snake)
+    """
+    isCamel = False
+    isSnake = False
+    isKebab = False
+    isPascal = False
+    matched = 0
+    result = ''
+
+    if snakeCaseRegex.search(string):
+        isSnake = True
+    if kebabCaseRegex.search(string):
+        isKebab = True
+    if camalCaseRegex.search(string):
+        isCamel = True
+    if pascalCaseRegex.search(string):
+        isPascal = True
+
+    if isCamel:
+        matched+=1
+        result = 'camel'
+    if isSnake:
+        matched+=1
+        result = 'snake'
+    if isKebab:
+        matched+=1
+        result = 'kebab'
+    if isPascal:
+        matched+=1
+        result = 'pascal'
+    
+    if matched>1:
+        return 'mixed'
+    elif matched==0:
+        return 'unknown'
+    else:
+        return result
+
+def spilt_string(string):
+    """
+    To split a string (camel, pascal, snake, kebab) altogether
+    """
+    listOfWords = []
+    result = []
+
+    if '_' in string:
+        listOfWords.extend(string.split('_'))
+    if '-' in string:
+        listOfWords.extend(string.split('-'))
+    if any(c.isdigit() for c in string): # If contain digits
+        listOfWords.extend(re.split(r'(\d+)', string))
+
+    if listOfWords == []:
+        listOfWords.append(string)
+
+    for words in listOfWords:
+        # fail, `MSG` will split `m,s,g`
+        # splitted_words = re.findall(r'[a-z]+|[A-Z][a-z]*', words)
+        # fail, `MSGTo` will split `MSGT, o`
+        # splitted_words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+', words)
+        splitted_words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|$)', words)
+        if splitted_words:
+            result.extend(splitted_words)
+        else:
+            result.append(words)
+    # fail, this will lower `MSG`
+    # i dont wan it to lower if the whole string is uppercase
+    # `Hello` -> lower
+    # `HELLO` dont lower
+    # lowerCased = [s.lower() for s in result]
+    lowerCased = [s.lower() if any(c.islower() for c in s) else s for s in result]
+    return lowerCased
+
+def is_english_word(word):
+    """
+    return: True / False
+    eg: "eur" - False
+    "your" - True
+    """
+    return word in words.words()

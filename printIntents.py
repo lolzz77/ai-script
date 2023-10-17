@@ -1,12 +1,28 @@
 # command
-# python3 [file name] [json file]
-# python3 [file name] [json file] [search] [layer(json file has many layers, which layer you want to print)] [item(dictionary, key or value)]
-# python3 [file name] [json file] [one] [layer(json file has many layers, which layer you want to print)] [item(dictionary, key or value)]
+"""
+1. prett yprint json content
+- can add `| less` after the command
+python3 [this script file name] [json file]
+
+2. Search some keyword in JSON
+- [search] - the keyword for this operation
+- [layer] - json file has many layers, which layer you want to print
+- [item] - either `key` or `value`
+- [search string] - the keyword you want to search
+python3 [this script file name] [json file] [search] [layer] [item] [search string]
+
+3. 
+python3 [this script file name] [json file] [one] [layer(json file has many layers, which layer you want to print)] [item(dictionary, key or value)]
+
+4. search function backronyms
+- [backronym] - the keyword for this operation
+- [search string] - the backronym keyword you want to search
+python3 [this script file name] [json file] [backronym] [search string]
+"""
 
 import sys
 import argparse
 import json
-
 import include # header file
 
 # # with this, you can pass in argument like this
@@ -52,6 +68,9 @@ if len(sys.argv) >= 3:
     elif sys.argv[2] == 'print':
         operatoin_one_layer=True
         layer = int(sys.argv[3])
+    elif sys.argv[2] == 'backronym':
+        operatoin_backronym=True
+        search_str = str(sys.argv[3])
 
 
 def print_json_by_layers(data, layer = 1, item = 'key'):
@@ -165,8 +184,54 @@ def print_json_layer(data, layer):
         for key, value in data.items():
             print_json_layer(value, layer - 1)
 
-data = include.parse_json(json_file_path)
+def print_backronym(data, search_str):
+    """
+    intended for json file that has the following format:
+    {
+        "path/to/c/file": 
+        [
+            {
+                "functionName" : "get_passwd",
+                "acronymTags" : ["get", "passwod"]
+            },
+            {
+                "functionName" : "save_passwd",
+                "acronymTags" : ["save", "passwod"]
+            }
+        ],
+        "path/to/c/file": 
+        [
+            {
+                "functionName" : "get_passwd",
+                "acronymTags" : ["get", "passwod"]
+            },
+            {
+                "functionName" : "save_passwd",
+                "acronymTags" : ["save", "passwod"]
+            }
+        ]
+    }
 
+    print result:
+    file path: path/to/file
+    function name: functionName
+    """
+    for key, value in data.items():
+        file_path_printed = False
+        if value is None:
+            continue
+        for v in value:
+            if v["acronymTags"] is None:
+                continue
+            if search_str in v["acronymTags"]:
+                if not file_path_printed:
+                    file_path_printed = True
+                    print()
+                    print("File Path : " + key)
+                print(v["functionName"])
+
+    
+data = include.parse_json(json_file_path)
 
 if operation_pretty_print:
     operation_pretty_print_json(data)
@@ -178,9 +243,15 @@ if operatoin_search:
 
 if operatoin_one_item:
     print_json_one_item(data, key)
+    sys.exit()
 
 if operatoin_one_layer:
     print_json_layer(data, layer)
+    sys.exit()
+
+if operatoin_backronym:
+    print_backronym(data, search_str)
+    sys.exit()
 
 # for value in data[str(item)]:
 #     print(get_last_element(value))

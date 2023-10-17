@@ -1,0 +1,3 @@
+*.json
+!my-acronym.json
+__pycache__
