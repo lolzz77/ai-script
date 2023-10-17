@@ -223,6 +223,7 @@ def spilt_string(string):
     if any(c.isdigit() for c in string): # If contain digits
         listOfWords.extend(re.split(r'(\d+)', string))
 
+    # this is because above logic will cause listOfWords to hold a list should the string contains digits
     if len(listOfWords) != 0:
         for word in listOfWords:
             if '_' in word:
@@ -230,6 +231,7 @@ def spilt_string(string):
     else:
         listOfWords.extend(string.split('_'))
 
+    # this is because above logic will cause listOfWords to hold a list
     if len(listOfWords) != 0:
         for word in listOfWords:
             if '-' in word:
@@ -237,6 +239,7 @@ def spilt_string(string):
     else:
         listOfWords.extend(string.split('_'))
 
+    # in case above has none that can be splitted, then add the string into the list
     if listOfWords == []:
         listOfWords.append(string)
 
