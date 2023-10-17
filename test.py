@@ -59,7 +59,9 @@ class TestSplitString(unittest.TestCase):
             ['XintX', ['xint', 'X']],
             ['A2A', ['A', '2', 'A']],
             ['pause2continue', ['pause', '2', 'continue']],
-            ['FLEXCAN_ERRATA_', ['FLEXCAN', 'ERRATA']],
+            ['A_B_', ['A', 'B']],
+            ['_A_B', ['A', 'B']],
+            ['_A_B_', ['A', 'B']],
         ]
 
         for i, test_case in enumerate(test_cases):

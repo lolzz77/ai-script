@@ -228,6 +228,15 @@ def spilt_string(string):
 
     if listOfWords == []:
         listOfWords.append(string)
+    
+    # for cases "A_B_"
+    # will result in "'A', 'B', ''"
+    # for cases "_A_B"
+    # will result in "'', 'A', 'B'"
+    if listOfWords[-1] == '':
+        listOfWords.pop()
+    if listOfWords[0] == '':
+        listOfWords.pop(0)
 
     for words in listOfWords:
         # fail, `MSG` will split `m,s,g`
