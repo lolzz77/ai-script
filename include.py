@@ -276,6 +276,11 @@ def spilt_string(string):
             result.extend(splitted_words)
         else:
             result.append(words)
+
+    # remove duplicates
+    list_to_set = set(result)
+    result = list(list_to_set)
+
     # fail, this will lower `MSG`
     # i dont wan it to lower if the whole string is uppercase
     # `Hello` -> lower

@@ -33,9 +33,18 @@ class TestSplitString(unittest.TestCase):
     #             self.assertEqual(detect_case(test_case[0]), test_case[1])
 
     def test_split_string(self):
+        """
+        Rules:
+        1. Upper case followed by lower case, will convert into lower case
+        eg: Get -> get
+        2. A sequence of uppercase, will stay uppercase
+        eg: GET -> GET
+        3. Single uppercase, will stay uppercase
+        eg: intX -> int, X
+        4. Duplicates will be removed
+        eg: ['a', 'b', 'a'] -> ['a', 'b']
+        """
         test_cases = [
-            # If is acronym, return UPPERCASE
-            # If is capitalized letter, return all in lowercase
             ['thisIsCamelCase',                    ['this', 'is', 'camel', 'case']],
             ['thisiscancer',                       ['thisiscancer']],
             ['this_is_snake_case',                 ['this', 'is', 'snake', 'case']],
@@ -50,8 +59,8 @@ class TestSplitString(unittest.TestCase):
             ['add', ['add']],
             ['a', ['a']],
             ['HAHA_lolAreYouOK', ['HAHA', 'lol', 'are', 'you', 'OK']],
-            ['XIntX', ['X', 'int', 'X']],
-            ['XCharX', ['X', 'char', 'X']],
+            ['XIntX', ['X', 'int']],
+            ['XCharX', ['X', 'char']],
             # logically, this is how it will be splitted
             # unless your dictionary detects that `Xint` is not a word
             # and finds that, `int` is a word, and thus separate them into `X, int`
