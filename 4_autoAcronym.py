@@ -17,6 +17,7 @@ Expected output
 }
 
 to be updated into
+subject to existing known knowledge
 
 {
     "dir": null,
@@ -51,7 +52,6 @@ def main():
     with open(MY_ACRONYM_JSON, 'r') as f:
         my_acronym_data = json.load(f)
 
-    values = []
     for key in acronym_data.keys():
         if acronym_data[key][0] is None:
             if include.is_english_word(key):
