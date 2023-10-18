@@ -39,21 +39,27 @@ import include # header file
 
 # this is existing JSON file
 ACRONYM_JSON='acronym.json'
+MY_ACRONYM_JSON='my-acronym.json'
 
 def is_english_word(word):
     return word in words.words()
 
 def main():
-    # get data
     with open(ACRONYM_JSON, 'r') as f:
-        data = json.load(f)
+        acronym_data = json.load(f)
+
+    with open(MY_ACRONYM_JSON, 'r') as f:
+        my_acronym_data = json.load(f)
 
     values = []
-    for key in data.keys():
-        if data[key][0] is None:
+    for key in acronym_data.keys():
+        if acronym_data[key][0] is None:
             if include.is_english_word(key):
-                data[key][0] = key
+                acronym_data[key][0] = key
+            for my_acronym_key in my_acronym_data.keys():
+                if key == my_acronym_key:
+                    acronym_data[key] = my_acronym_data[key]
     
-    include.write_json(data, ACRONYM_JSON)
+    include.write_json(acronym_data, ACRONYM_JSON)
 
 main()
