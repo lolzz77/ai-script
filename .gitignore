@@ -1,3 +1,4 @@
 *.json
 !my-acronym.json
+!language/**/*.json
 __pycache__

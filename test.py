@@ -4,6 +4,7 @@ import re
 import nltk
 nltk.download('words')
 from nltk.corpus import words
+import json
 
 camalCaseRegex = re.compile(r'^[a-z]+[^_-]+') # camalCase
 pascalCaseRegex = re.compile(r'^[A-Z]+[^_-]+') # PascalCase
@@ -87,7 +88,6 @@ class TestSplitString(unittest.TestCase):
 
             with self.subTest(i=i):
                 self.assertEqual(Counter(include.spilt_string(test_case[0])), Counter(test_case[1]))
-
 class TestIsEnglishWord(unittest.TestCase):
     def test_is_english_word(self):
         test_cases = [
@@ -109,6 +109,38 @@ class TestIsEnglishWord(unittest.TestCase):
             result = test_case[1]
             with self.subTest(i=i):
                 self.assertEqual(include.is_english_word(test), result)
+
+class TestRegex(unittest.TestCase):
+    def test_regex_1(self):
+        with open('/data/ai-script/language/cpp/language-configuration.json', 'r') as f:
+            json_str = f.read()
+            # print(json_str)
+            data = json.loads(json_str)
+
+        # print(data['wordPattern'])
+        # pattern = re.compile(data['wordPattern'])
+        # result = pattern.findall('hello there haha 123 abc123def')
+        # print(result)
+
+        return True
+
+    def test_regex_2(self):
+        with open('/data/ai-script/language/cpp/c.tmLanguage.json', 'r') as f:
+            json_str = f.read()
+            # print(json_str)
+            data = json.loads(json_str)
+
+        regex = data["repository"]["c_function_call"]["begin"]
+        print()
+        print()
+        print(regex)
+        print()
+        print()
+        pattern = re.compile(regex)
+        result = pattern.findall("test();")
+        print(result)
+        return True
+
 
 if __name__ == '__main__':
     unittest.main()

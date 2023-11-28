@@ -9,15 +9,15 @@ python3 [this script file name] [json file]
 - [layer] - json file has many layers, which layer you want to print
 - [item] - either `key` or `value`
 - [search string] - the keyword you want to search
-python3 [this script file name] [json file] [search] [layer] [item] [search string]
+python3 [this script file name] [json file] search [layer] [item] [search string]
 
 3. 
-python3 [this script file name] [json file] [one] [layer(json file has many layers, which layer you want to print)] [item(dictionary, key or value)]
+python3 [this script file name] [json file] one [layer(json file has many layers, which layer you want to print)] [item(dictionary, key or value)]
 
 4. search function backronyms
 - [backronym] - the keyword for this operation
 - [search string] - the backronym keyword you want to search
-python3 [this script file name] [json file] [backronym] [search string]
+python3 [this script file name] [json file] backronym [search string]
 """
 
 import sys
@@ -227,7 +227,7 @@ def print_backronym(data, search_str):
                 if not file_path_printed:
                     file_path_printed = True
                     print()
-                    print("File Path : " + key)
+                    print(include.COLORS['yellow'] + "File Path : " + key + include.COLORS['reset'])
                 print(v["functionName"])
 
     
